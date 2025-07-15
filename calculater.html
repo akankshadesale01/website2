@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simple Calculator</title>
+  <style>
+    /* Basic styling */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .calculator {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 320px;
+    }
+
+    .display {
+      width: 100%;
+      height: 50px;
+      font-size: 1.8em;
+      text-align: right;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+      user-select: none;
+      background-color: #eee;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    button {
+      padding: 15px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #007BFF;
+      color: white;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    button.operator {
+      background-color: #28a745;
+    }
+
+    button.operator:hover {
+      background-color: #1e7e34;
+    }
+
+    button.clear {
+      background-color: #dc3545;
+    }
+
+    button.clear:hover {
+      background-color: #a71d2a;
+    }
+
+    button.equal {
+      background-color: #ffc107;
+      color: black;
+      grid-column: span 2;
+    }
+
+    button.equal:hover {
+      background-color: #e0a800;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <input type="text" class="display" id="display" disabled placeholder="0" />
+
+    <div class="buttons">
+      <!-- Row 1 -->
+      <button class="clear" id="clear">C</button>
+      <button class="operator" onclick="appendOperator('/')">/</button>
+      <button class="operator" onclick="appendOperator('*')">*</button>
+      <button class="operator" onclick="appendOperator('-')">-</button>
+
+      <!-- Row 2 -->
+      <button onclick="appendNumber('7')">7</button>
+      <button onclick="appendNumber('8')">8</button>
+      <button onclick="appendNumber('9')">9</button>
+      <button class="operator" onclick="appendOperator('+')">+</button>
+
+      <!-- Row 3 -->
+      <button onclick="appendNumber('4')">4</button>
+      <button onclick="appendNumber('5')">5</button>
+      <button onclick="appendNumber('6')">6</button>
+      <button onclick="appendNumber('.')">.</button>
+
+      <!-- Row 4 -->
+      <button onclick="appendNumber('1')">1</button>
+      <button onclick="appendNumber('2')">2</button>
+      <button onclick="appendNumber('3')">3</button>
+      <button class="equal" id="equal">=</button>
+
+      <!-- Row 5 -->
+      <button onclick="appendNumber('0')" style="grid-column: span 2;">0</button>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById('display');
+
+    // Append number or decimal point to display
+    function appendNumber(num) {
+      if (display.value === '0' && num !== '.') {
+        display.value = num;
+      } else {
+        display.value += num;
+      }
+    }
+
+    // Append operator (+, -, *, /) but prevent duplicates and invalid starts
+    function appendOperator(op) {
+      const val = display.value;
+      if (val === '' || val.endsWith('+') || val.endsWith('-') || val.endsWith('*') || val.endsWith('/')) {
+        return; // disallow consecutive operators or starting with operator
+      }
+      display.value += op;
+    }
+
+    // Clear display
+    document.getElementById('clear').onclick = () => {
+      display.value = '';
+    };
+
+    // Calculate the expression
+    document.getElementById('equal').onclick = () => {
+      try {
+        if (display.value === '') return;
+        // Evaluate expression safely
+        const result = Function('"use strict";return (' + display.value + ')')();
+        display.value = result;
+      } catch {
+        display.value = 'Error';
+      }
+    };
+
+    // Initialize display with zero
+    display.value = '';
+  </script>
+</body>
+</html>
